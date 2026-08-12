@@ -171,7 +171,7 @@ CREATE TABLE IF NOT EXISTS Hiperparametros (
 );
 
 CREATE TABLE IF NOT EXISTS Investigacion (
-    codigo_investigacion INT PRIMARY KEY,
+    codigo_investigacion INT AUTO_INCREMENT PRIMARY KEY,
     id_experimento INT NOT NULL,
     codigo INT NOT NULL,
     titulo VARCHAR(50) NOT NULL,
