@@ -114,7 +114,11 @@ CREATE TABLE IF NOT EXISTS Senior (
 
     CONSTRAINT fk_id_investigador_senior
     FOREIGN KEY (id_investigador)
-    REFERENCES Investigador(id_investigador)
+    REFERENCES Investigador(id_investigador),
+    
+    CONSTRAINT fk_equipo_lider
+    FOREIGN KEY (codigo)
+    REFERENCES Equipo(codigo)
 );
 
 CREATE TABLE IF NOT EXISTS Junior (
@@ -149,6 +153,7 @@ CREATE TABLE IF NOT EXISTS Convenio (
     id_investigador INT NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE,
+    nivel_acceso VARCHAR(20),
     
     CONSTRAINT fk_organizacion_convenio
     FOREIGN KEY (id_organizacion)

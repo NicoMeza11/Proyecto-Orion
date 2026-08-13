@@ -29,3 +29,10 @@ JOIN Compone C ON C.id_dataset = DS.id_dataset
 JOIN Observacion O ON O.codigo_observacion = C.codigo_observacion
 GROUP BY DS.nombre, DS.id_dataset;
 
+-- Obtener la cantidad de convenios firmados y la cantidad de organizaciones colaboradoras según su país de origen
+
+SELECT O.pais, COUNT(C.id_convenio) AS convenios_firmados, COUNT(DISTINCT O.id_organizacion) AS cantidad_organizaciones
+FROM Convenio C
+JOIN Organizacion O ON O.id_organizacion = C.id_organizacion
+GROUP BY O.pais
+
