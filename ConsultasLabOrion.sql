@@ -85,21 +85,6 @@ WHERE Exp.estado = 'completado'
 GROUP BY Inv.id_investigador, Inv.nombre, Inv.apellido, Eq.nombre
 ORDER BY horas_totales_ejecucion DESC;
 
--- Para cada equipo mostrar cuantos investigadores lo integran, quien es su lider, cuantas investigaciones tienen asociadas y su area cientifica
-
-SELECT E.codigo AS numero_equipo,
-	E.area_cientifica,
-	COUNT(DISTINCT I.id_investigador) AS cantidad_integrantes, 
-	CONCAT(ISenior.nombre, ' ', ISenior.apellido) AS lider,
-	COUNT(DISTINCT Inv.codigo_investigacion) AS numero_investigaciones
-FROM Equipo E
-JOIN Investigador I ON E.codigo = I.codigo
-LEFT JOIN SENIOR S ON S.codigo_equipo_liderado = E.codigo
-LEFT JOIN Investigador ISenior ON S.id_investigador = ISenior.id_investigador
-LEFT JOIN Investigacion Inv ON E.codigo = Inv.codigo
-GROUP BY E.codigo, E.area_cientifica
-ORDER BY E.codigo;
-
 -- Obtener la precision maxima y promedio de los experimentos completados por cada modelo de IA y que hayan sido probados en mas de un experimento
 
 SELECT M.id_modelo,
@@ -134,11 +119,3 @@ AND E.desempeno_accuracy > (
     )
 GROUP BY E.id_Experimento, E.desempeno_accuracy
 ORDER BY accuracy DESC;
-
-
-
-	
-	
-
-
-
