@@ -1,6 +1,8 @@
 USE orionDatabase;
 
+-- =================================================================================================
 -- Consultas basicas (Maximo 2)
+-- ==================================================================================================
 
 -- Motrar el tipo, rango de longitud y estado del instrumento 
 SELECT 
@@ -15,7 +17,9 @@ SELECT nombre, area_cientifica, fecha_creacion
 FROM Equipo
 ORDER BY fecha_creacion DESC;
 
+-- ==================================================================================================
 -- Consultas intermedias 
+-- ==================================================================================================
 
 -- Perfil de investigadores Senior que lideran equipos
 SELECT I.nombre, I.apellido, E.nombre AS nombre_equipo, S.numero_publicaciones 
@@ -80,3 +84,61 @@ JOIN Experimento Exp ON Inv.id_investigador = Exp.id_investigador
 WHERE Exp.estado = 'completado'
 GROUP BY Inv.id_investigador, Inv.nombre, Inv.apellido, Eq.nombre
 ORDER BY horas_totales_ejecucion DESC;
+
+-- Para cada equipo mostrar cuantos investigadores lo integran, quien es su lider, cuantas investigaciones tienen asociadas y su area cientifica
+
+SELECT E.codigo AS numero_equipo,
+	E.area_cientifica,
+	COUNT(DISTINCT I.id_investigador) AS cantidad_integrantes, 
+	CONCAT(ISenior.nombre, ' ', ISenior.apellido) AS lider,
+	COUNT(DISTINCT Inv.codigo_investigacion) AS numero_investigaciones
+FROM Equipo E
+JOIN Investigador I ON E.codigo = I.codigo
+LEFT JOIN SENIOR S ON S.codigo_equipo_liderado = E.codigo
+LEFT JOIN Investigador ISenior ON S.id_investigador = ISenior.id_investigador
+LEFT JOIN Investigacion Inv ON E.codigo = Inv.codigo
+GROUP BY E.codigo, E.area_cientifica
+ORDER BY E.codigo;
+
+-- Obtener la precision maxima y promedio de los experimentos completados por cada modelo de IA y que hayan sido probados en mas de un experimento
+
+SELECT M.id_modelo,
+	M.arquitectura,
+    M.tarea_objetivo,
+    COUNT(E.id_experimento) AS total_experimentos,
+    MAX(E.desempeno_accuracy) AS accuracy_maxima,
+    ROUND(AVG(E.desempeno_accuracy),2) AS promedio_accuracy
+FROM Modelo_ia M
+JOIN Experimento E ON E.id_modelo = M.id_modelo
+WHERE E.estado = 'completado'
+GROUP BY M.id_modelo, M.arquitectura, M.tarea_objetivo
+HAVING total_experimentos > 1
+ORDER BY promedio_accuracy DESC;
+
+-- ==================================================================================================
+-- Consultas avanzadas
+-- ==================================================================================================
+
+-- Obtener los experimentos que lograron un rendimiento (accuracy) estrictamente superior al promedio global de todos los experimentos completados y su responsable
+
+SELECT E.id_experimento,
+	E.desempeno_accuracy AS accuracy,
+    CONCAT(I.nombre, ' ', I.apellido) AS responsable
+FROM Experimento E
+JOIN Investigador I ON E.id_investigador = I.id_investigador
+WHERE E.estado = 'completado'
+AND E.desempeno_accuracy > (
+	SELECT AVG(desempeno_accuracy)
+	FROM Experimento E
+    WHERE E.estado = 'completado'
+    )
+GROUP BY E.id_Experimento, E.desempeno_accuracy
+ORDER BY accuracy DESC;
+
+
+
+	
+	
+
+
+
