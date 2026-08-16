@@ -28,7 +28,7 @@ JOIN Senior S ON I.id_investigador = S.id_investigador
 JOIN Equipo E ON E.codigo = I.codigo
 ORDER BY numero_publicaciones DESC;
 
--- 
+--  Calcula la cantidad total de observaciones y el tamaño acumulado en bytes para cada dataset.
 
 SELECT DS.nombre AS Nombre_DataSet, COUNT(O.codigo_observacion) AS Cantidad_Observaciones, SUM(O.tamano_byte) AS Tamano_acumalado
 FROM Dataset DS
@@ -119,3 +119,23 @@ AND E.desempeno_accuracy > (
     )
 GROUP BY E.id_Experimento, E.desempeno_accuracy
 ORDER BY accuracy DESC;
+
+-- Resume las métricas de desempeño y uso de hardware por equipo y modelo de IA.
+
+SELECT 
+    E.nombre AS equipo,
+    E.area_cientifica,
+    M.arquitectura AS modelo_ia,
+    COUNT(DISTINCT EX.id_experimento) AS total_experimentos,
+    ROUND(AVG(EX.desempeno_accuracy), 2) AS promedio_accuracy,
+    MAX(EX.desempeno_accuracy) AS max_accuracy,
+    COUNT(DISTINCT U.id_recurso_computacional) AS recursos_hardware_usados
+FROM Equipo E
+JOIN Investigacion I ON E.codigo = I.codigo
+JOIN Experimento EX ON I.codigo_investigacion = EX.codigo_investigacion
+JOIN Modelo_IA M ON EX.id_modelo = M.id_modelo
+LEFT JOIN Utiliza U ON EX.id_experimento = U.id_experimento
+WHERE EX.estado = 'completado'
+GROUP BY E.codigo, E.nombre, E.area_cientifica, M.id_modelo, M.arquitectura
+HAVING COUNT(DISTINCT EX.id_experimento) >= 1
+ORDER BY promedio_accuracy DESC, total_experimentos DESC;
