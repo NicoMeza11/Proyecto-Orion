@@ -30,3 +30,22 @@ BEGIN
 END //
 
 DELIMITER ;
+
+-- Procedimiento que actualiza el estado, asigna un rendimiento y registra la fecha del termino de un experimento
+
+DELIMITER //
+
+CREATE PROCEDURE sp_finalizar_experimento(
+    IN p_id_experimento INT,
+    IN p_estado VARCHAR(20),
+    IN p_accuracy DECIMAL(5,4)
+)
+BEGIN
+    UPDATE Experimento
+    SET estado = p_estado,
+        desempeno_accuracy = p_accuracy,
+        fecha_hora_fin = NOW()
+    WHERE id_experimento = p_id_experimento;
+END //
+
+DELIMITER ;
