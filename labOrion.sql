@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS Instrumento (
     id_instrumento INT AUTO_INCREMENT PRIMARY KEY,
     id_organizacion INT NOT NULL,
     tipo VARCHAR(50) NOT NULL,
-    estado VARCHAR(20) NOT NULL, -- activo, en mantenimiento, retirado
+    estado VARCHAR(20) NOT NULL, 
     longitud_max DECIMAL(10,4) NOT NULL,
     longitud_min DECIMAL(10,4) NOT NULL,
 
@@ -122,7 +122,7 @@ CREATE TABLE IF NOT EXISTS Equipo (
 
 CREATE TABLE IF NOT EXISTS Investigador (
     id_investigador INT AUTO_INCREMENT PRIMARY KEY,
-    codigo INT NOT NULL, -- equipo al que pertenece
+    codigo INT NOT NULL, 
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     nacimiento DATE NOT NULL,
@@ -178,12 +178,12 @@ CREATE TABLE IF NOT EXISTS Modelo_IA (
 
 CREATE TABLE IF NOT EXISTS Investigacion (
     codigo_investigacion INT AUTO_INCREMENT PRIMARY KEY,
-    codigo INT NOT NULL, -- equipo a cargo
+    codigo INT NOT NULL, 
     numero_version INT NOT NULL,
     id_dataset INT NOT NULL,
     titulo VARCHAR(120) NOT NULL,
     objetivo_principal VARCHAR(150) NOT NULL,
-    estado VARCHAR(20) NOT NULL, -- continua, finalizada, suspendida
+    estado VARCHAR(20) NOT NULL, 
     fecha_inicio DATE NOT NULL,
 
     CONSTRAINT fk_codigo_equipo_investigacion
@@ -199,9 +199,9 @@ CREATE TABLE IF NOT EXISTS Experimento (
     id_experimento INT AUTO_INCREMENT PRIMARY KEY,
     codigo_investigacion INT NOT NULL,
     id_modelo INT NOT NULL,
-    id_investigador INT NOT NULL, -- responsable
+    id_investigador INT NOT NULL, 
     desempeno_accuracy DECIMAL(5,2),
-    estado VARCHAR(20) NOT NULL, -- pendiente, en ejecucion, completado, fallido
+    estado VARCHAR(20) NOT NULL, 
     fecha_hora_inicio DATETIME,
     fecha_hora_fin DATETIME,
 
@@ -221,11 +221,11 @@ CREATE TABLE IF NOT EXISTS Experimento (
 CREATE TABLE IF NOT EXISTS Convenio (
     id_convenio INT AUTO_INCREMENT PRIMARY KEY,
     id_organizacion INT NOT NULL,
-    id_investigador INT NOT NULL, -- senior responsable
+    id_investigador INT NOT NULL, 
     id_dataset INT NOT NULL,
     fecha_inicio DATE NOT NULL,
     fecha_fin DATE,
-    nivel_acceso VARCHAR(20) NOT NULL, -- lectura, lectura y escritura, acceso completo
+    nivel_acceso VARCHAR(20) NOT NULL, 
     clausulas_legales VARCHAR(200) NOT NULL,
 
     CONSTRAINT fk_organizacion_convenio
