@@ -35,3 +35,18 @@ BEGIN
 END //
 
 DELIMITER ;
+
+-- Valida que al registrar un convenio, la fecha de término no sea inconsistente con la de inicio
+DELIMITER //
+
+CREATE TRIGGER trg_validar_fechas_convenio
+BEFORE INSERT ON Convenio
+FOR EACH ROW
+BEGIN
+    IF NEW.fecha_fin IS NOT NULL AND NEW.fecha_fin < NEW.fecha_inicio THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Error: La fecha de término del convenio no puede ser anterior a la fecha de inicio.';
+    END IF;
+END //
+
+DELIMITER ;

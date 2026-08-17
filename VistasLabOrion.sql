@@ -26,3 +26,22 @@ JOIN Modelo_IA M ON M.id_modelo = E.id_modelo
 WHERE E.estado = 'completado'
 ORDER BY E.desempeno_accuracy DESC;
 
+-- Muestra los convenios que están actualmente vigentes junto a su organización y el investigador responsable
+
+CREATE VIEW vista_convenios_vigentes AS
+SELECT 
+    C.id_convenio,
+    O.nombre_org AS organizacion,
+    O.tipo AS tipo_organizacion,
+    CONCAT(I.nombre, ' ', I.apellido) AS responsable_senior,
+    D.nombre AS dataset_asociado,
+    C.nivel_acceso,
+    C.fecha_inicio,
+    C.fecha_fin
+FROM Convenio C
+JOIN Organizacion O ON C.id_organizacion = O.id_organizacion
+JOIN Senior S ON C.id_investigador = S.id_investigador
+JOIN Investigador I ON S.id_investigador = I.id_investigador
+JOIN Dataset D ON C.id_dataset = D.id_dataset
+WHERE C.fecha_fin IS NULL OR C.fecha_fin >= CURDATE()
+ORDER BY C.fecha_inicio DESC;

@@ -49,3 +49,21 @@ BEGIN
 END //
 
 DELIMITER ;
+
+-- Procedimiento para asignar un recurso computacional a un experimento y cambiar su estado a 'asignado'
+
+DELIMITER //
+
+CREATE PROCEDURE sp_asignar_recurso_experimento(
+    IN p_id_recurso INT,
+    IN p_id_experimento INT
+)
+BEGIN
+    INSERT INTO Utiliza (id_recurso_computacional, id_experimento, fecha_asignacion, fecha_liberacion)
+    VALUES (p_id_recurso, p_id_experimento, CURDATE(), NULL);
+    UPDATE Recurso_Computacional
+    SET estado = 'asignado'
+    WHERE id_recurso_computacional = p_id_recurso;
+END //
+
+DELIMITER ;
