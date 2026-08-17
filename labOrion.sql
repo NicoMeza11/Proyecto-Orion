@@ -34,11 +34,13 @@ CREATE TABLE IF NOT EXISTS Recurso_Computacional (
     tipo VARCHAR(50) NOT NULL,
     capacidad INT NOT NULL,
     memoria INT NOT NULL,
-    estado VARCHAR(20) NOT NULL, -- disponible, asignado, en mantenimiento
+    estado VARCHAR(20) NOT NULL,
 
     CONSTRAINT fk_codigoServidor_RecursoComputacional
     FOREIGN KEY (codigo_servidor)
     REFERENCES Servidor(codigo_servidor)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Instrumento (
@@ -83,28 +85,32 @@ CREATE TABLE IF NOT EXISTS Dataset (
 CREATE TABLE IF NOT EXISTS Compone (
     id_dataset INT NOT NULL,
     codigo_observacion INT NOT NULL,
-
     PRIMARY KEY (id_dataset, codigo_observacion),
 
     CONSTRAINT fk_id_dataset_compone
     FOREIGN KEY (id_dataset)
-    REFERENCES Dataset(id_dataset),
+    REFERENCES Dataset(id_dataset)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE,
 
     CONSTRAINT fk_codigo_observacion_compone
     FOREIGN KEY (codigo_observacion)
     REFERENCES Observacion(codigo_observacion)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Version_dataset (
     numero_version INT NOT NULL,
     id_dataset INT NOT NULL,
     desc_actualizaciones VARCHAR(255) NOT NULL,
-
     PRIMARY KEY (numero_version, id_dataset),
 
     CONSTRAINT fk_version_id_dataset
     FOREIGN KEY (id_dataset)
     REFERENCES Dataset(id_dataset)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Equipo (
@@ -135,18 +141,20 @@ CREATE TABLE IF NOT EXISTS Investigador (
 
 CREATE TABLE IF NOT EXISTS Senior (
     id_investigador INT PRIMARY KEY,
-    codigo_equipo_liderado INT UNIQUE, -- equipo que lidera (1 lider por equipo)
+    codigo_equipo_liderado INT UNIQUE,
     h_index INT NOT NULL,
     numero_publicaciones INT NOT NULL,
     anos_experiencia INT NOT NULL,
 
     CONSTRAINT fk_id_investigador_senior
     FOREIGN KEY (id_investigador)
-    REFERENCES Investigador(id_investigador),
+    REFERENCES Investigador(id_investigador)
+    ON DELETE CASCADE ON UPDATE CASCADE,
 
     CONSTRAINT fk_equipo_lider
     FOREIGN KEY (codigo_equipo_liderado)
     REFERENCES Equipo(codigo)
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Junior (
@@ -155,6 +163,8 @@ CREATE TABLE IF NOT EXISTS Junior (
     CONSTRAINT fk_id_investigador_junior
     FOREIGN KEY (id_investigador)
     REFERENCES Investigador(id_investigador)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Modelo_IA (
@@ -235,12 +245,13 @@ CREATE TABLE IF NOT EXISTS Hiperparametros (
     id_experimento INT NOT NULL,
     nombre_hiperparametro VARCHAR(30) NOT NULL,
     valor VARCHAR(30) NOT NULL,
-
     PRIMARY KEY (id_experimento, nombre_hiperparametro),
 
     CONSTRAINT fk_experimento_hiperparametros
     FOREIGN KEY (id_experimento)
     REFERENCES Experimento(id_experimento)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS Utiliza (
@@ -248,14 +259,16 @@ CREATE TABLE IF NOT EXISTS Utiliza (
     id_experimento INT NOT NULL,
     fecha_asignacion DATE NOT NULL,
     fecha_liberacion DATE,
-
     PRIMARY KEY (id_recurso_computacional, id_experimento, fecha_asignacion),
 
     CONSTRAINT fk_id_recurso
     FOREIGN KEY (id_recurso_computacional)
-    REFERENCES Recurso_Computacional(id_recurso_computacional),
+    REFERENCES Recurso_Computacional(id_recurso_computacional)
+    ON DELETE CASCADE ON UPDATE CASCADE,
 
     CONSTRAINT fk_id_experimento_utiliza
     FOREIGN KEY (id_experimento)
     REFERENCES Experimento(id_experimento)
+    ON DELETE CASCADE 
+    ON UPDATE CASCADE
 );
